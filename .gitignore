@@ -1,0 +1,14 @@
+*.DS_Store
+.idea/
+
+
+### backend-specific
+
+.ipynb_checkpoints
+__pycache__/
+*.pptx
+venv
+output
+
+### VS Code ###
+.vscode/

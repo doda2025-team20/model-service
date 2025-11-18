@@ -22,6 +22,8 @@ COPY --from=0 /sms/output /sms/output
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+ENV MODEL_PORT=8081
+
 CMD ["python", "src/serve_model.py"]
 
 EXPOSE 8081

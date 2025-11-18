@@ -50,4 +50,4 @@ def predict():
 
 if __name__ == '__main__':
     #clf = joblib.load('output/model.joblib')
-    app.run(host="0.0.0.0", port=8081, debug=True)
+    app.run(host="0.0.0.0", port=os.getenv("MODEL_PORT", 8081), debug=True)

@@ -8,7 +8,9 @@ COPY src /sms/src
 
 RUN pip install --no-cache-dir --prefer-binary -r /sms/requirements.txt
 
+ENV MODEL_URL="https://github.com/doda2025-team20/model-service/releases/latest/download/model.zip"
 ENV MODEL_PORT=8081
+ENV DEBUG=false
 
 EXPOSE ${MODEL_PORT}
 

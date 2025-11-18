@@ -9,6 +9,7 @@ __pycache__/
 *.pptx
 venv
 output
+model.zip
 
 ### VS Code ###
 .vscode/

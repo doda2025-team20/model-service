@@ -25,6 +25,8 @@ WORKDIR /sms
 COPY . /sms/
 COPY --from=training /sms/output /sms/output
 
-ENTRYPOINT ["python", "src/serve_model.py"]
+ENV MODEL_PORT=8081
 
-EXPOSE 8081
+EXPOSE ${MODEL_PORT}
+
+ENTRYPOINT ["python", "src/serve_model.py"]

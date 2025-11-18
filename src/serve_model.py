@@ -6,11 +6,36 @@ from flask import Flask, jsonify, request
 from flasgger import Swagger
 import pandas as pd
 import os
+import requests
+import zipfile
 
 from text_preprocessing import prepare, _extract_message_len, _text_process
 
 app = Flask(__name__)
 swagger = Swagger(app)
+
+def get_model(url=None):
+    model_path = 'output/model.joblib'
+    if os.path.exists(model_path):
+        print("[model] Model already exists, skipping download.")
+        return
+    
+    if url is None:
+        raise ValueError("[model] Model URL must be provided if model file does not exist.")
+    
+    print("[model] Model not found, downloading...")
+
+    try:
+      r = requests.get(url)
+      with open("model.zip", "wb") as f:
+          f.write(r.content)
+
+      with zipfile.ZipFile("model.zip", "r") as zip_ref:
+          zip_ref.extractall()
+      os.remove("model.zip")
+      print("[model] Model downloaded and extracted successfully.")
+    except Exception as e:
+      raise RuntimeError(f"Failed to download or extract the model: {e}")
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -52,4 +77,9 @@ def predict():
 if __name__ == '__main__':
     #clf = joblib.load('output/model.joblib')
     port = int(os.environ.get("MODEL_PORT", 8081))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    model_url = os.environ.get("MODEL_URL", "https://github.com/doda2025-team20/model-service/releases/latest/download/model.zip")
+    is_debug = os.environ.get("DEBUG", "false").lower() == "true"
+
+    get_model(url=model_url)
+
+    app.run(host="0.0.0.0", port=port, debug=is_debug)

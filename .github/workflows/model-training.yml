@@ -37,12 +37,9 @@ jobs:
       - name: Run Text Classification
         run: python src/text_classification.py
 
-      - name: Compress output Directory
-        run: zip -r model.zip output/
-
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: model-output
-          path: model.zip
+          name: model
+          path: output/
           retention-days: 7

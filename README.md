@@ -60,5 +60,53 @@ Once its startup has finished, you can either access [localhost:8081/apidocs](ht
       "sms": "test ..."
     }
 
+## Running the Backend via Docker
 
+A built container image is published to GitHub Container Registry (GHCR).
+
+Pull the image
+```bash
+docker pull ghcr.io/doda2025-team20/backend:latest
+```
+
+If the repository is private, authenticate first:
+
+```bash
+echo "<GHCR_PAT>" | docker login ghcr.io -u <github-username> --password-stdin
+```
+
+Run the container
+```bash
+docker run \
+  -p 8081:8081 \
+  ghcr.io/doda2025-team20/backend:latest
+```
+
+The service becomes available on:
+```bash
+http://localhost:8081/apidocs
+```
+
+## Configurable runtime parameters
+
+The Dockerfile defines:
+
+```bash
+ENV MODEL_PORT=8081
+ENV DEBUG=false
+```
+
+These settings can be overridden at runtime:
+
+```bash
+docker run -e DEBUG=true -e MODEL_PORT=9000 -p 9000:9000 ...
+```
+
+The container starts using:
+
+```bash
+ENTRYPOINT ["python", "src/serve_model.py"]
+```
+
+This keeps behavior predictable and avoids the need to manually specify commands when deploying.
 

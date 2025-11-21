@@ -79,7 +79,7 @@ Run the container
 ```bash
 docker run \
   -p 8081:8081 \
-  ghcr.io/<org>/backend:latest
+  ghcr.io/doda2025-team20/backend:latest
 ```
 
 The service becomes available on:

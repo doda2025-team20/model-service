@@ -66,7 +66,7 @@ A built container image is published to GitHub Container Registry (GHCR).
 
 Pull the image
 ```bash
-docker pull ghcr.io/doda2025-team20/backend:latest
+docker pull ghcr.io/doda2025-team20/model-service:latest
 ```
 
 If the repository is private, authenticate first:
@@ -79,7 +79,7 @@ Run the container
 ```bash
 docker run \
   -p 8081:8081 \
-  ghcr.io/doda2025-team20/backend:latest
+  ghcr.io/doda2025-team20/model-service:latest
 ```
 
 The service becomes available on:

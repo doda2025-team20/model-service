@@ -1,0 +1,17 @@
+[project]
+dependencies = [
+    "numpy==1.26.4",
+    "pandas==2.2.2",
+    "nltk==3.6.1",
+    "scipy==1.13",
+    "matplotlib==3.10.1",
+    "scikit-learn==1.4.2",
+    "Flask==2.3.3",
+    "flasgger==0.9.7.1",
+    "requests==2.32.5",
+]
+requires-python = ">=3.12"
+readme = "README.md"
+description = "SMS Spam detection model service"
+version = "0.0.1"
+name = "model-service"

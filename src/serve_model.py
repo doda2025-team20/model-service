@@ -58,16 +58,30 @@ def predict():
                     example: This is an example of an SMS.
     responses:
       200:
-        description: "The result of the classification: 'spam' or 'ham'."
+        description: "The result of the classification: 'spam' or 'ham' with confidence."
     """
     input_data = request.get_json()
     sms = input_data.get('sms')
     processed_sms = prepare(sms)
     model = joblib.load('output/model.joblib')
+    
+    # Get prediction
     prediction = model.predict(processed_sms)[0]
+    
+    # Get confidence scores (probabilities for each class)
+    probabilities = model.predict_proba(processed_sms)[0]
+    
+    # Get the confidence for the predicted class
+    # If prediction is "ham" (class 0), use probabilities[0]
+    # If prediction is "spam" (class 1), use probabilities[1]
+    if prediction == "ham":
+        confidence = float(probabilities[0])
+    else:  # spam
+        confidence = float(probabilities[1])
     
     res = {
         "result": prediction,
+        "confidence": confidence,
         "classifier": "decision tree",
         "sms": sms
     }

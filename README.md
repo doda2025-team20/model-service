@@ -110,3 +110,19 @@ ENTRYPOINT ["python", "src/serve_model.py"]
 
 This keeps behavior predictable and avoids the need to manually specify commands when deploying.
 
+## Release Process
+
+### Container Images
+
+Container images are automatically built and published to GHCR when changes are pushed to the `main` branch. The behavior depends on the version specified in `pyproject.toml`:
+
+- **Release Version** (e.g., `0.1.0`): If the version is incremented and does not contain a hyphen, a new Git tag `v0.1.0` is created, and the image is published with the `0.1.0` tag and `latest`.
+- **Snapshot Version** (e.g., `0.1.0-dev`): If the version contains a hyphen, a snapshot image is built with the tag `snapshot-<commit-sha>`. This allows for testing without releasing a stable version.
+
+### Model Training
+
+The model training process is decoupled from the application release. You can manually trigger the **Train and Release Model** workflow from the GitHub Actions tab. This workflow will:
+
+1. Train the model using the current code.
+2. Package the model artifacts.
+3. Create a GitHub Release tagged `model-<version>` containing the trained model.

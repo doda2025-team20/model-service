@@ -115,16 +115,6 @@ def predict_bulk():
     """
     input_data = request.get_json()
     bulk = input_data.get('bulk')
-    # processed_bulk = prepare(bulk)
-    # model = joblib.load('output/model.joblib')
-    # prediction = model.predict(processed_sms)[0]
-    
-    # res = {
-    #     "result": prediction,
-    #     "classifier": "decision tree",
-    #     "sms": sms
-    # }
-    # print(res)
 
     res = []
     model = joblib.load('output/model.joblib')
@@ -132,8 +122,16 @@ def predict_bulk():
     for sms in bulk:
         processed_sms = prepare(sms)
         prediction = model.predict(processed_sms)[0]
+        probabilities = model.predict_proba(processed_sms)[0]
+        
+        if prediction == "ham":
+            confidence = float(probabilities[0])
+        else:
+            confidence = float(probabilities[1])
+        
         res.append({
             "result": prediction,
+            "confidence": confidence,
             "classifier": "decision tree",
             "sms": sms
         })
@@ -143,7 +141,6 @@ def predict_bulk():
     return jsonify(res)
 
 if __name__ == '__main__':
-    #clf = joblib.load('output/model.joblib')
     port = int(os.environ.get("MODEL_PORT", 8081))
     model_url = os.environ.get("MODEL_URL", "https://github.com/doda2025-team20/model-service/releases/latest/download/model.zip")
     is_debug = os.environ.get("DEBUG", "false").lower() == "true"

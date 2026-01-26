@@ -96,6 +96,60 @@ def predict():
     print(res)
     return jsonify(res)
 
+@app.route('/bulk', methods=['POST'])
+def predict_bulk():
+    """
+    Predict the spam status of multiple SMS messages.
+    ---
+    consumes:
+      - application/json
+    parameters:
+        - name: input_data
+          in: body
+          description: messages to be classified.
+          required: True
+          schema:
+            type: object
+            required: bulk
+            properties:
+                bulk:
+                    type: array
+                    items:
+                      type: string
+                    example: ["This is an example of an SMS.", "Another example SMS."]
+    responses:
+      200:
+        description: "The results of the classification for each SMS."
+    """
+    input_data = request.get_json()
+    bulk = input_data.get('bulk')
+    # processed_bulk = prepare(bulk)
+    # model = joblib.load('output/model.joblib')
+    # prediction = model.predict(processed_sms)[0]
+    
+    # res = {
+    #     "result": prediction,
+    #     "classifier": "decision tree",
+    #     "sms": sms
+    # }
+    # print(res)
+
+    res = []
+    model = joblib.load('output/model.joblib')
+
+    for sms in bulk:
+        processed_sms = prepare(sms)
+        prediction = model.predict(processed_sms)[0]
+        res.append({
+            "result": prediction,
+            "classifier": "decision tree",
+            "sms": sms
+        })
+
+    print(res)
+
+    return jsonify(res)
+
 if __name__ == '__main__':
     #clf = joblib.load('output/model.joblib')
     port = int(os.environ.get("MODEL_PORT", 8081))

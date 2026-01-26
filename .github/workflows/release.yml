@@ -43,10 +43,10 @@ jobs:
         run: |
           TAG="v${{ steps.get_version.outputs.version }}"
           if git show-ref --tags --quiet --verify "refs/tags/$TAG"; then
-            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
             echo "Tag $TAG already exists. Skipping release."
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
             echo "Tag $TAG does not exist. Proceeding with release."
           fi
 
@@ -79,7 +79,7 @@ jobs:
       context: .
       dockerfile: ./Dockerfile
       platforms: linux/amd64,linux/arm64
-      version: ${{ needs.determine-version.outputs.version }}
+      version: ${{ needs.check-version.outputs.version }}
       add_latest: true
     secrets: inherit
 

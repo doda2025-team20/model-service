@@ -14,19 +14,27 @@ from text_preprocessing import prepare, _extract_message_len, _text_process
 app = Flask(__name__)
 swagger = Swagger(app)
 
-def get_model(url=None):
+def model_version_url(version=None):
+    if version is None or version == "latest":
+        return "https://github.com/doda2025-team20/model-service/releases/latest/download/model.zip"
+    else:
+        return f"https://github.com/doda2025-team20/model-service/releases/download/{version}/model.zip"
+
+def get_model(version=None):
     model_path = 'output/model.joblib'
     if os.path.exists(model_path):
         print("[model] Model already exists, skipping download.")
         return
     
-    if url is None:
-        raise ValueError("[model] Model URL must be provided if model file does not exist.")
+    if version is None:
+        raise ValueError("[model] Model Version must be provided if model file does not exist, through environment variable MODEL_VERSION. 'latest' can be used to get the latest version.")
     
-    print("[model] Model not found, downloading...")
+    print(f"[model] Model not found, downloading {version}...")
 
     try:
+      url = model_version_url(version)
       r = requests.get(url)
+      r.raise_for_status()
       with open("model.zip", "wb") as f:
           f.write(r.content)
 
@@ -91,9 +99,12 @@ def predict():
 if __name__ == '__main__':
     #clf = joblib.load('output/model.joblib')
     port = int(os.environ.get("MODEL_PORT", 8081))
-    model_url = os.environ.get("MODEL_URL", "https://github.com/doda2025-team20/model-service/releases/latest/download/model.zip")
+    model_url = os.environ.get("MODEL_URL", None)
+    model_version = os.environ.get("MODEL_VERSION", "latest")
+    if model_url:
+        print(f"[model] MODEL_URL is unsupported. Please use MODEL_VERSION instead. {model_version} will be downloaded.")
     is_debug = os.environ.get("DEBUG", "false").lower() == "true"
 
-    get_model(url=model_url)
+    get_model(version=model_version)
 
     app.run(host="0.0.0.0", port=port, debug=is_debug)

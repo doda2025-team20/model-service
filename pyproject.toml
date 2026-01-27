@@ -13,5 +13,5 @@ dependencies = [
 requires-python = ">=3.12"
 readme = "README.md"
 description = "SMS Spam detection model service"
-version = "0.0.2"
+version = "0.0.3"
 name = "model-service"
